@@ -3,10 +3,6 @@ Jonas Beckman jonas.beckman@kamidev.net
 Mikael Kindborg mikael.kindborg@gmail.com
 Source code license: MIT
 
-DroidZine is built using the DroidScript framework
-http://github.com/divineprog/droidscript
-
-
 DroidZine - Comics in Your Phone
 
 DroidZine is a framework for creating and displaying comic fanzines on Android phones.
@@ -16,3 +12,6 @@ DroidZine was written on May 1, 2001 and won first prize at the GTUG Stockholm A
 
 Twitter: droidzine_org
 website: www.droidzine.org
+
+DroidZine is built using the DroidScript framework
+http://github.com/divineprog/droidscript
