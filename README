@@ -5,13 +5,14 @@ Source code license: MIT
 
 DroidZine - Comics in Your Phone
 
-DroidZine is a framework for creating and displaying comic fanzines on Android phones.
-
-Currently, this is just a very rough proof of concept. 
-DroidZine was written on May 1, 2001 and won first prize at the GTUG Stockholm Android Hackathon. 
-
 Twitter: droidzine_org
 website: www.droidzine.org
+
+DroidZine is a framework for creating and displaying comics on Android phones. 
+Currently it's just a rough proof of concept but we hope to take it further. 
+
+DroidZine was created on May 1, 2010. It won first prize at GTUG Stockholm Android Hackathon.
+Here is an article about that: http://bit.ly/bTp0Ja
 
 DroidZine is built using the DroidScript framework
 http://github.com/divineprog/droidscript
