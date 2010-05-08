@@ -12,7 +12,7 @@ DroidZine is a framework for creating and displaying comics on Android phones.
 Currently it's just a rough proof of concept but we hope to take it further. 
 
 DroidZine was created on May 1, 2010. It won first prize at GTUG Stockholm Android Hackathon.
-Here is an article about that event: http://bit.ly/bTp0Ja
+Here is an article (in Swedish) about that event: http://bit.ly/bTp0Ja
 
 DroidZine is built using the DroidScript framework
 http://github.com/divineprog/droidscript
