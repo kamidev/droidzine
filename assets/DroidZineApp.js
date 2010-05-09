@@ -8,6 +8,7 @@ var ActivityInfo = Packages.android.content.pm.ActivityInfo;
 var Log = Packages.android.util.Log;
 var Menu = Packages.android.view.Menu;
 var Toast = Packages.android.widget.Toast;
+var AlertDialog = Packages.android.app.AlertDialog;
 var ArrayAdapter = Packages.android.widget.ArrayAdapter;
 var Intent = Packages.android.content.Intent;
 var DroidScriptFileHandler = Packages.comikit.droidzine.DroidScriptFileHandler;
@@ -18,13 +19,15 @@ var Typeface = Packages.android.graphics.Typeface;
 var Color = Packages.android.graphics.Color;
 var lang = Packages.java.lang;
 var android = Packages.android;
+var DEFAULT_FANZINE = "http://www.droidzine.org/issue1/comics/urls.txt"
+var ANOTHER_FANZINE = "http://www.droidzine.org/issue1/comics/urls2.txt"
 
 function onCreate(bundle)
 {
     Activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     Activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-    fanzine = getFanzine("http://www.droidzine.org/issue1/comics/urls.txt")
+    fanzine = getFanzine(DEFAULT_FANZINE)
     var listView = createListView(fanzine); 
     Activity.setContentView(listView);
 }
@@ -119,7 +122,7 @@ function onCreateOptionsMenu(menu)
 function onPrepareOptionsMenu(menu)
 {
     OptionsMenuItems = 
-        [["Open Comic", function() { openDialog(); }],
+        [["Open Fanzine", function() { openFanzine(); }],
          ["About", function() { showToast(
              "DroidZine App by Jonas Beckman & Mikael Kindborg, GTUG Hackathon Stockholm May 1, 2010"); }]
         ];
@@ -157,38 +160,24 @@ function showToast(message)
         Toast.LENGTH_SHORT).show();
 }
 
-function openDialog()
+function openFanzine()
 {
     var input = new EditText(Activity);
-    input.setText("http://");
+    input.setText(ANOTHER_FANZINE);
     var dialog = new AlertDialog.Builder(Activity);
-    dialog.setTitle("Open DroidZine Comic");
-    dialog.setMessage("Enter web address");
+    dialog.setTitle("Get another fanzine");
+    dialog.setMessage("Enter URL");
     dialog.setView(input);
-    dialog.setPositiveButton(Droid.translate("Open"), function() {
+    dialog.setPositiveButton("Open", function() {
         var scriptFileName = input.getText().toString();
-        openScript(scriptFileName);
+        fanzine = getFanzine(scriptFileName)
+        var listView = createListView(fanzine); 
+        Activity.setContentView(listView);
     });
-    dialog.setNegativeButton(Droid.translate("Cancel"), function() {
+    dialog.setNegativeButton("Cancel", function() {
     });
     dialog.show();
 }
-
-
-
-//function createListView()
-//{
-//    var listView = new ListView(Activity);
-//    listView.setDrawSelectorOnTop(true);
-//    listView.getSelector().setAlpha(100);
-//    listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-//    listView.setAdapter(createListViewArrayAdapter(ListItems, getListView));
-//    listView.setOnItemClickListener(function(parent, view, position, id) {
-//        //showMessage("You picked: " + position);
-//        view.setSelected(true);
-//        ListItems[position].action(); });
-//    return listView;
-//}
 
 //Creates a custom ListAdapter
 //items - a JavaScript array
