@@ -25,22 +25,7 @@ function onCreate(bundle)
     Activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
     fanzine = getFanzine("http://www.droidzine.org/issue1/comics/urls.txt")
-    var listView = createListView(fanzine.comicsList); //new ListView(Activity);
-    
-//    var arrayAdapter =
-//        new ArrayAdapter(Activity,
-//           android.R.layout.simple_list_item_1,
-//           comicsList);
-//    listView.setAdapter(arrayAdapter);
-    
-    listView.setOnItemClickListener(function(parent, view, position, id) {
-        var intent = new Intent();
-        intent.setClassName(Activity, "comikit.droidzine.DroidScriptActivity");
-        intent.putExtra("ScriptAsset", "DroidZineView.js");
-        intent.putExtra("Url", fanzine.urlList[position]);
-        Activity.startActivity(intent);
-    });
-
+    var listView = createListView(fanzine); 
     Activity.setContentView(listView);
 }
 
@@ -68,12 +53,12 @@ function getFanzine(url)
 
 //List to hold the items in the listview.
 //First item is a graphic image presenting the program.
-function createListView(comicsList)
+function createListView(fanzine)
 {
     var listView = new ListView(Activity);
     
     listView.setAdapter(createListViewArrayAdapter(
-       comicsList,
+       fanzine.comicsList,
        function(position, convertView) {
            var view = convertView;
            if (null == convertView) {
@@ -97,9 +82,17 @@ function createListView(comicsList)
                //view.setOnClickListener(function () {
                //    view.setText("You Clicked Me!"); })
            }
-           view.setText(comicsList[position]);
+           view.setText(fanzine.comicsList[position]);
            return view; 
        }));
+       
+      listView.setOnItemClickListener(function(parent, view, position, id) {
+        var intent = new Intent();
+        intent.setClassName(Activity, "comikit.droidzine.DroidScriptActivity");
+        intent.putExtra("ScriptAsset", "DroidZineView.js");
+        intent.putExtra("Url", fanzine.urlList[position]);
+        Activity.startActivity(intent);
+    });
     
     return listView;
 }
