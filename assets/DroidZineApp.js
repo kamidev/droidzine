@@ -23,26 +23,9 @@ function onCreate(bundle)
 {
     Activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     Activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    
-    // Get the master url list
-    var urlList = DroidScriptFileHandler.create().readStringFromFileOrUrl(
-        "http://www.droidzine.org/issue1/comics/urls.txt");
-    
-    var urls = urlList.split("\n");
-    var comicsList = lang.reflect.Array.newInstance(lang.String, urls.length);
-    var urlList = [];
-    for (var i = 0; i < urls.length; ++i) 
-    {
-        Log.i("***Reading", urls[i]);
-        var script = stripDroidZineTags(
-            DroidScriptFileHandler.create().readStringFromFileOrUrl(urls[i]));
-        Log.i("***DSLScript", script);
-        var thePage = Activity.eval(script);
-        comicsList[i] = thePage.title + " by " + thePage.author;
-        urlList.push(urls[i]);
-    }
 
-    var listView = createListView(comicsList); //new ListView(Activity);
+    fanzine = getFanzine("http://www.droidzine.org/issue1/comics/urls.txt")
+    var listView = createListView(fanzine.comicsList); //new ListView(Activity);
     
 //    var arrayAdapter =
 //        new ArrayAdapter(Activity,
@@ -54,11 +37,33 @@ function onCreate(bundle)
         var intent = new Intent();
         intent.setClassName(Activity, "comikit.droidzine.DroidScriptActivity");
         intent.putExtra("ScriptAsset", "DroidZineView.js");
-        intent.putExtra("Url", urlList[position]);
+        intent.putExtra("Url", fanzine.urlList[position]);
         Activity.startActivity(intent);
     });
 
     Activity.setContentView(listView);
+}
+
+function getFanzine(url)
+{
+    // Get list of comics
+    var urlList = DroidScriptFileHandler.create().readStringFromFileOrUrl(url);
+    var urls = urlList.split("\n");
+    var comicsList = lang.reflect.Array.newInstance(lang.String, urls.length);
+    
+    // Get individual comics
+    var urlList = [];
+    for (var i = 0; i < urls.length; ++i) 
+    {
+        Log.i("***Reading", urls[i]);
+        var script = stripDroidZineTags(
+            DroidScriptFileHandler.create().readStringFromFileOrUrl(urls[i]));
+        Log.i("***DSLScript", script);
+        var thePage = Activity.eval(script);
+        comicsList[i] = thePage.title + " by " + thePage.author;
+        urlList.push(urls[i]);
+    }
+    return {urlList : urlList, comicsList : comicsList};
 }
 
 //List to hold the items in the listview.
