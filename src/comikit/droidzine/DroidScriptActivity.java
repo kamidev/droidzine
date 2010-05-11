@@ -184,7 +184,7 @@ public class DroidScriptActivity extends Activity
         try 
         {
             return eval(
-                DroidScriptFileHandler.create().readStringFromApplicationFile(this, fileName), 
+                DroidScriptIO.create().readStringFromApplicationFile(this, fileName), 
                 fileName);
         }
         catch (Throwable e) 
@@ -202,7 +202,7 @@ public class DroidScriptActivity extends Activity
         try
         {
             return eval(
-                DroidScriptFileHandler.create().readStringFromFileOrUrl(filenameOrUrl), 
+                DroidScriptIO.create().readStringFromFileOrUrl(filenameOrUrl), 
                 filenameOrUrl);
         }
         catch (Throwable e)
@@ -220,7 +220,7 @@ public class DroidScriptActivity extends Activity
         try
         {
             return eval(
-                DroidScriptFileHandler.create().readStringFromAssetFile(this, scriptName), 
+                DroidScriptIO.create().readStringFromAssetFile(this, scriptName), 
                 scriptName);
         }
         catch (Throwable e)

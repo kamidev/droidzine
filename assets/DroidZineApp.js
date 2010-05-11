@@ -1,6 +1,5 @@
 Activity.evalAssetFile("DroidZineDSL.js");
 
-var DroidScriptFileHandler = Packages.comikit.droidzine.DroidScriptFileHandler;
 var Intent = Packages.android.content.Intent;
 var WindowManager = Packages.android.view.WindowManager;
 var Window = Packages.android.view.Window;
@@ -11,7 +10,7 @@ var Toast = Packages.android.widget.Toast;
 var AlertDialog = Packages.android.app.AlertDialog;
 var ArrayAdapter = Packages.android.widget.ArrayAdapter;
 var Intent = Packages.android.content.Intent;
-var DroidScriptFileHandler = Packages.comikit.droidzine.DroidScriptFileHandler;
+var DroidScriptIO = Packages.comikit.droidzine.DroidScriptIO;
 var ListView = Packages.android.widget.ListView;
 var EditText = Packages.android.widget.EditText;
 var TextView = Packages.android.widget.TextView;
@@ -19,23 +18,51 @@ var Typeface = Packages.android.graphics.Typeface;
 var Color = Packages.android.graphics.Color;
 var lang = Packages.java.lang;
 var android = Packages.android;
+var ProgressDialog = Packages.android.app.ProgressDialog;
+var Thread = Packages.java.lang.Thread;
+var Button = Packages.android.widget.Button;
+
 var DEFAULT_FANZINE = "http://www.droidzine.org/issue1/comics/urls.txt"
 var ANOTHER_FANZINE = "http://www.droidzine.org/issue1/comics/urls2.txt"
 
 function onCreate(bundle)
 {
+    var orientation = Activity.getRequestedOrientation();
     Activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     Activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-    fanzine = getFanzine(DEFAULT_FANZINE)
-    var listView = createListView(fanzine); 
-    Activity.setContentView(listView);
+    var splashButton = new Button(Activity);
+    splashButton.setText("DroidZine");
+    Activity.setContentView(splashButton);
+    
+    // Make sure we are in landscape orientation.
+    if (true) //ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE == orientation)
+    {
+        Log.i("***Opening progress dialog", "");
+            
+        // Show progress dialog
+        var progress = ProgressDialog.show(Activity, "Loading", "Loading Fanzine List");
+        
+        new Thread(function() {
+            
+            var fanzine = getFanzine(DEFAULT_FANZINE);
+            
+            Activity.runOnUiThread(function() {
+                var listView = createListView(fanzine); 
+                Activity.setContentView(listView);
+                
+                Log.i("***CLosing progress dialog", "");
+                // Close progress dialog
+                progress.dismiss();
+            });
+        }).start();
+    }
 }
 
 function getFanzine(url)
 {
     // Get list of comics
-    var urlList = DroidScriptFileHandler.create().readStringFromFileOrUrl(url);
+    var urlList = DroidScriptIO.create().readStringFromFileOrUrl(url);
     var urls = urlList.split("\n");
     var comicsList = lang.reflect.Array.newInstance(lang.String, urls.length);
     
@@ -45,17 +72,18 @@ function getFanzine(url)
     {
         Log.i("***Reading", urls[i]);
         var script = stripDroidZineTags(
-            DroidScriptFileHandler.create().readStringFromFileOrUrl(urls[i]));
+            DroidScriptIO.create().readStringFromFileOrUrl(urls[i]));
         Log.i("***DSLScript", script);
         var thePage = Activity.eval(script);
         comicsList[i] = thePage.title + " by " + thePage.author;
         urlList.push(urls[i]);
     }
-    return {urlList : urlList, comicsList : comicsList};
+    
+    return { urlList : urlList, comicsList : comicsList };
 }
 
-//List to hold the items in the listview.
-//First item is a graphic image presenting the program.
+// List to hold the items in the listview.
+// First item is a graphic image presenting the program.
 function createListView(fanzine)
 {
     var listView = new ListView(Activity);
@@ -254,3 +282,49 @@ function createInstance(javaInterface, object)
        });
     return obj;
 }
+
+/*
+function onStart()
+{  
+    if (true) //ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE == orientation)
+    {
+        Log.i("***Opening progress dialog", "");
+        
+        // Show progress dialog
+        var progress = ProgressDialog.show(Activity, "Loading", "Loading Fanzine List");
+        
+        var list = null;
+        
+        // Get list of comics
+        DroidScriptIO.web().readString(DEFAULT_FANZINE, function(resultCode, data) 
+        {
+            Log.i("***Callback!", data);
+            list = data;
+        });
+        
+        while (list == null) { Log.i("***Waiting", ""+list); Packages.java.lang.Thread.sleep(1000); }
+        
+        var urls = list.split("\n");
+        var comicsList = lang.reflect.Array.newInstance(lang.String, urls.length);
+        
+        // Get individual comics
+        var urlList = [];
+        for (var i = 0; i < urls.length; ++i) 
+        {
+            Log.i("***Reading", urls[i]);
+            comicsList[i] = "Comic" + " by " + "Author";
+            urlList.push(urls[i]);
+        }
+        
+        var fanzine = { urlList : urlList, comicsList : comicsList };
+        var listView = createListView(fanzine); 
+        Activity.setContentView(listView);
+        
+        // Close progress dialog
+        progress.dismiss();
+            
+        
+        // var fanzine = getFanzine(DEFAULT_FANZINE);
+    }
+}
+*/

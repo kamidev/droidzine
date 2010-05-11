@@ -17,7 +17,7 @@ import android.content.res.AssetManager;
 import android.os.Environment;
 
 /**
- * Helper class for file handling.
+ * Helper class for IO.
  * @author Mikael Kindborg
  * Email: mikael.kindborg@gmail.com
  * Blog: divineprogrammer@blogspot.com
@@ -25,15 +25,65 @@ import android.os.Environment;
  * Copyright (c) Mikael Kindborg 2010
  * Source code license: MIT
  */
-public class DroidScriptFileHandler 
+public class DroidScriptIO 
 {
-    private DroidScriptFileHandler()
+    private DroidScriptIO()
     {
     }
     
-    public static DroidScriptFileHandler create()
+    public static DroidScriptIO create()
     {
-        return new DroidScriptFileHandler();
+        return new DroidScriptIO();
+    }
+    
+    public static WebIO web()
+    {
+        return new WebIO();
+    }
+
+    public static AssetIO asset()
+    {
+        return new AssetIO();
+    }
+    
+    public interface InputHandler
+    {
+        void handle(String resultCode, Object data);
+    }
+    
+    public static class WebIO 
+    {
+    	public WebIO readString(final String url, final InputHandler handler)
+    	{
+    		new Thread()
+    	    {
+                public void run()
+                {
+                    DroidScriptIO io = DroidScriptIO.create();
+                    try 
+                    {
+                        String data = io.readString(io.openUrl(url));
+                        handler.handle("OK", data);
+                    } 
+                    catch (Exception e) 
+                    {
+                        e.printStackTrace();
+                        handler.handle("ERROR", e.toString());
+                    }
+                }
+            }
+            .start();
+            return this;
+        }
+    }
+
+    public static class AssetIO 
+    {
+        public AssetIO readString(String fileName, InputHandler handler)
+        {
+            handler.handle("OK", "");
+            return this;
+        }
     }
     
     public String readStringFromFileOrUrl(String fileOrUrl) throws Exception

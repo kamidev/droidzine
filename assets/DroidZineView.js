@@ -14,7 +14,7 @@ var Window = Packages.android.view.Window;
 var ActivityInfo = Packages.android.content.pm.ActivityInfo;
 //var MediaStore = Packages.android.provider.MediaStore;
 var Morph = Packages.comikit.droidzine.Morph;
-var DroidScriptFileHandler = Packages.comikit.droidzine.DroidScriptFileHandler;
+var DroidScriptIO = Packages.comikit.droidzine.DroidScriptIO;
 var Log = Packages.android.util.Log;
 
 var OptionsMenuItems;
@@ -31,7 +31,7 @@ function onCreate(bundle)
     var url = intent.getStringExtra("Url");
     Log.i("*** reading from url ", url);
     var panelDSL = stripDroidZineTags(
-        DroidScriptFileHandler.create().readStringFromFileOrUrl(url));
+        DroidScriptIO.create().readStringFromFileOrUrl(url));
     var thePage = Activity.eval(panelDSL);
 
     Log.i("********* panel 0", thePage.panels[0]);
@@ -207,7 +207,7 @@ function stripDroidZineTags(data)
 function readBitmapFromUrl(url)
 {
     //log("Opening: " + fileName);
-    var stream = DroidScriptFileHandler.create().openUrl(url);
+    var stream = DroidScriptIO.create().openUrl(url);
     var bitmap = BitmapFactory.decodeStream(stream);
     stream.close();
     //log("Bitmap: " + bitmap.getWidth() + " " + bitmap.getHeight());
@@ -217,7 +217,7 @@ function readBitmapFromUrl(url)
 function readBitmapFromExternalStorageFileInputStream(path)
 {
     //log("Opening: " + fileName);
-    var stream = DroidScriptFileHandler.create().openExternalStorageFileInputStream(path);
+    var stream = DroidScriptIO.create().openExternalStorageFileInputStream(path);
     var bitmap = BitmapFactory.decodeStream(stream);
     stream.close();
     //log("Bitmap: " + bitmap.getWidth() + " " + bitmap.getHeight());
