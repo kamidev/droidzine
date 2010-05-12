@@ -16,6 +16,8 @@ var ActivityInfo = Packages.android.content.pm.ActivityInfo;
 var Morph = Packages.comikit.droidzine.Morph;
 var DroidScriptIO = Packages.comikit.droidzine.DroidScriptIO;
 var Log = Packages.android.util.Log;
+var Thread = Packages.java.lang.Thread;
+var ProgressDialog = Packages.android.app.ProgressDialog;
 
 var OptionsMenuItems;
 

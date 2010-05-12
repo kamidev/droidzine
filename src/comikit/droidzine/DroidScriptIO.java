@@ -53,7 +53,7 @@ public class DroidScriptIO
     
     public static class WebIO 
     {
-    	public WebIO readString(final String url, final InputHandler handler)
+    	public WebIO readStringFromUrl(final String url, final InputHandler handler)
     	{
     		new Thread()
     	    {

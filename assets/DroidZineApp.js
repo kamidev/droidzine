@@ -23,28 +23,22 @@ var Thread = Packages.java.lang.Thread;
 var Button = Packages.android.widget.Button;
 
 var DEFAULT_FANZINE = "http://www.droidzine.org/issue1/comics/urls.txt"
+var DEFAULT_FANZINE_TITLE = "Droidzine issue 1" 
 var ANOTHER_FANZINE = "http://www.droidzine.org/issue1/comics/urls2.txt"
+var ANOTHER_FANZINE_TITLE = "Droidzine issue 1 (short version)" 
 
 function onCreate(bundle)
 {
     var orientation = Activity.getRequestedOrientation();
     Activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     Activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-    var splashButton = new Button(Activity);
-    splashButton.setText("DroidZine");
-    Activity.setContentView(splashButton);
     
     // Make sure we are in landscape orientation.
     if (true) //ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE == orientation)
     {
-        Log.i("***Opening progress dialog", "");
-            
-        // Show progress dialog
-        var progress = ProgressDialog.show(Activity, "Loading", "Loading Fanzine List");
-        
+        Log.i("***Opening progress dialog", "");           
+        var progress = ProgressDialog.show(Activity, "DroidZine issue 1", "Loading comics...");
         new Thread(function() {
-            
             var fanzine = getFanzine(DEFAULT_FANZINE);
             
             Activity.runOnUiThread(function() {
@@ -191,16 +185,29 @@ function showToast(message)
 function openFanzine()
 {
     var input = new EditText(Activity);
-    input.setText(ANOTHER_FANZINE);
+    input.setText(ANOTHER_FANZINE); //Default to short version of current fanzine
+    
     var dialog = new AlertDialog.Builder(Activity);
     dialog.setTitle("Get another fanzine");
     dialog.setMessage("Enter URL");
     dialog.setView(input);
     dialog.setPositiveButton("Open", function() {
-        var scriptFileName = input.getText().toString();
-        fanzine = getFanzine(scriptFileName)
-        var listView = createListView(fanzine); 
-        Activity.setContentView(listView);
+        var fanzineUrl = input.getText().toString();
+        
+        Log.i("***Opening progress dialog", "");           
+        var progress = ProgressDialog.show(Activity, "New Fanzine", "Loading comics...");
+        new Thread(function() {
+            var fanzine = getFanzine(fanzineUrl);
+            
+            Activity.runOnUiThread(function() {
+                var listView = createListView(fanzine); 
+                Activity.setContentView(listView);
+                
+                Log.i("***CLosing progress dialog", "");
+                // Close progress dialog
+                progress.dismiss();
+            });
+        }).start();
     });
     dialog.setNegativeButton("Cancel", function() {
     });
